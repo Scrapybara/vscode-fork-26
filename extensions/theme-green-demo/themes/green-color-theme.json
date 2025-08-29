@@ -1,0 +1,28 @@
+{
+  "$schema": "vscode://schemas/color-theme",
+  "name": "Green Demo",
+  "type": "dark",
+  "colors": {
+    "activityBar.background": "#002200",
+    "sideBar.background": "#002a00",
+    "editor.background": "#003300",
+    "editor.foreground": "#E6FFE6",
+    "editorLineNumber.foreground": "#66aa66",
+    "editorGroupHeader.tabsBackground": "#002a00",
+    "tab.activeBackground": "#003300",
+    "tab.inactiveBackground": "#002a00",
+    "titleBar.activeBackground": "#003300",
+    "titleBar.inactiveBackground": "#002a00",
+    "statusBar.background": "#003300",
+    "editorWidget.background": "#002a00",
+    "focusBorder": "#006600",
+    "selection.background": "#00660055"
+  },
+  "tokenColors": [
+    { "settings": { "foreground": "#E6FFE6" } },
+    { "scope": "comment", "settings": { "foreground": "#8FBF8F", "fontStyle": "italic" } },
+    { "scope": "string", "settings": { "foreground": "#B7FFB7" } },
+    { "scope": "keyword", "settings": { "foreground": "#7FE57F" } }
+  ],
+  "semanticHighlighting": true
+}
