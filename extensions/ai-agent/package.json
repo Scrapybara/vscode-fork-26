@@ -1,0 +1,60 @@
+{
+  "name": "ai-agent",
+  "displayName": "AI Agent",
+  "description": "Built-in demo: AI activity bar and chat sidebar.",
+  "version": "0.0.1",
+  "publisher": "vscode",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "icon": "media/icon.png",
+  "activationEvents": [
+    "onView:aiAgent.chat",
+    "onCommand:aiAgent.open",
+    "onCommand:aiAgent.sendMessage"
+  ],
+  "main": "./out/extension",
+  "capabilities": {
+    "virtualWorkspaces": true,
+    "untrustedWorkspaces": { "supported": true }
+  },
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "workbench.viewContainer.ai",
+          "title": "AI",
+          "icon": "media/icon.png"
+        }
+      ]
+    },
+    "views": {
+      "workbench.viewContainer.ai": [
+        {
+          "id": "aiAgent.chat",
+          "name": "AI Chat"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "aiAgent.open",
+        "title": "AI: Open Chat Sidebar",
+        "category": "AI"
+      },
+      {
+        "command": "aiAgent.sendMessage",
+        "title": "AI: Send Message",
+        "category": "AI"
+      }
+    ]
+  },
+  "scripts": {
+    "compile": "npx gulp compile-extension:ai-agent",
+    "watch": "npx gulp watch-extension:ai-agent"
+  },
+  "devDependencies": {
+    "@types/node": "22.x"
+  }
+}
