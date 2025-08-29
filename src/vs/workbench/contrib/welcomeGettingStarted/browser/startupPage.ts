@@ -101,6 +101,14 @@ export class StartupPageRunnerContribution extends Disposable implements IWorkbe
 			if (e.editor instanceof GettingStartedInput) {
 				e.editor.selectedCategory = undefined;
 				e.editor.selectedStep = undefined;
+				// Post-completion/navigation fallback: prefer last active editor, otherwise open a new Untitled file.
+				// pseudo-telemetry: gettingStarted.postClosePath = hasAnyEditor ? 'lastActive' : 'untitled'
+				setTimeout(() => {
+					const hasAnyEditor = this.editorService.editors.length > 0 || !!this.editorService.activeEditor;
+					if (!hasAnyEditor) {
+						this.commandService.executeCommand('workbench.action.files.newUntitledFile');
+					}
+				}, 0);
 			}
 		}));
 	}
