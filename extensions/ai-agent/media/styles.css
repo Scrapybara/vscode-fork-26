@@ -1,12 +1,93 @@
-:root{--ai-accent:#0aa}
-body{margin:0;padding:0;font-family:var(--vscode-font-family);color:var(--vscode-foreground);background:var(--vscode-sideBar-background)}
-.ai-header{padding:.6rem .8rem;font-weight:600;border-bottom:1px solid var(--vscode-panel-border);background:var(--vscode-sideBarSectionHeader-background);color:var(--vscode-sideBarTitle-foreground)}
-.ai-main{display:flex;flex-direction:column;height:calc(100vh - 2.2rem)}
-.ai-messages{flex:1;overflow:auto;padding:.75rem;display:flex;flex-direction:column;gap:.5rem}
-.ai-msg{padding:.5rem .6rem;border-radius:.4rem;max-width:90%}
-.ai-msg.user{align-self:flex-end;background:var(--ai-accent);color:#002b2b}
-.ai-msg.assistant{align-self:flex-start;background:var(--vscode-editor-inactiveSelectionBackground);color:var(--vscode-foreground)}
-.ai-input{display:flex;gap:.5rem;border-top:1px solid var(--vscode-panel-border);padding:.5rem}
-.ai-input textarea{flex:1;resize:vertical;min-height:2.5rem;border:1px solid var(--vscode-input-border);background:var(--vscode-input-background);color:var(--vscode-input-foreground);border-radius:.3rem;padding:.5rem}
-.ai-send{border:none;padding:.6rem .9rem;background:var(--ai-accent);color:#002b2b;border-radius:.3rem;cursor:pointer}
-.ai-send:hover{filter:brightness(0.95)}
+/*
+  No purple gradients allowed. Use flat colors only.
+*/
+
+:root {
+  /* Flat palette only */
+  --ai-accent: #00aaaa;
+  --ai-bg: var(--vscode-sideBar-background);
+  --ai-text: var(--vscode-foreground);
+  --ai-secondary: var(--vscode-editor-inactiveSelectionBackground);
+  --ai-border: var(--vscode-panel-border);
+  --ai-button-text: #002b2b;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--vscode-font-family);
+  color: var(--ai-text);
+  background: var(--ai-bg);
+}
+
+.ai-header {
+  padding: 0.6rem 0.8rem;
+  font-weight: 600;
+  border-bottom: 1px solid var(--ai-border);
+  background: var(--vscode-sideBarSectionHeader-background);
+  color: var(--vscode-sideBarTitle-foreground);
+}
+
+.ai-main {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 2.2rem);
+}
+
+.ai-messages {
+  flex: 1;
+  overflow: auto;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ai-msg {
+  padding: 0.5rem 0.6rem;
+  border-radius: 0.4rem;
+  max-width: 90%;
+}
+
+.ai-msg.user {
+  align-self: flex-end;
+  background: var(--ai-accent);
+  color: var(--ai-button-text);
+}
+
+.ai-msg.assistant {
+  align-self: flex-start;
+  background: var(--ai-secondary);
+  color: var(--ai-text);
+}
+
+.ai-input {
+  display: flex;
+  gap: 0.5rem;
+  border-top: 1px solid var(--ai-border);
+  padding: 0.5rem;
+}
+
+.ai-input textarea {
+  flex: 1;
+  resize: vertical;
+  min-height: 2.5rem;
+  border: 1px solid var(--vscode-input-border);
+  background: var(--vscode-input-background);
+  color: var(--vscode-input-foreground);
+  border-radius: 0.3rem;
+  padding: 0.5rem;
+}
+
+.ai-send {
+  border: none;
+  padding: 0.6rem 0.9rem;
+  background: var(--ai-accent);
+  color: var(--ai-button-text);
+  border-radius: 0.3rem;
+  cursor: pointer;
+}
+
+.ai-send:hover {
+  filter: brightness(0.95);
+}
