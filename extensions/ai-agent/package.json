@@ -52,7 +52,8 @@
   },
   "scripts": {
     "compile": "npx gulp compile-extension:ai-agent",
-    "watch": "npx gulp watch-extension:ai-agent"
+    "watch": "npx gulp watch-extension:ai-agent",
+    "lint:styles": "bash ./scripts/check-styles.sh ."
   },
   "devDependencies": {
     "@types/node": "22.x"
