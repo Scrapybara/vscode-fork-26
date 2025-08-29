@@ -12,7 +12,8 @@
   "activationEvents": [
     "onView:aiAgent.chat",
     "onCommand:aiAgent.open",
-    "onCommand:aiAgent.sendMessage"
+    "onCommand:aiAgent.sendMessage",
+    "onCommand:aiAgent.selectModel"
   ],
   "main": "./out/extension",
   "capabilities": {
@@ -46,6 +47,11 @@
       {
         "command": "aiAgent.sendMessage",
         "title": "AI: Send Message",
+        "category": "AI"
+      },
+      {
+        "command": "aiAgent.selectModel",
+        "title": "AI: Select Model",
         "category": "AI"
       }
     ]
