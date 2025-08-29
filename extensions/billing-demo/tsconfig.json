@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./out",
+    "types": ["node"],
+    "rootDir": "./src"
+  },
+  "include": [
+    "src/**/*",
+    "../../src/vscode-dts/vscode.d.ts"
+  ]
+}

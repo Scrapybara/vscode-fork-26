@@ -1,0 +1,40 @@
+{
+  "name": "billing-demo",
+  "displayName": "Billing Demo",
+  "description": "Minimal demo billing UI with plans and fake upgrade button.",
+  "version": "0.0.1",
+  "publisher": "vscode",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.70.0"
+  },
+  "main": "./out/extension",
+  "categories": [
+    "Other"
+  ],
+  "extensionKind": [
+    "ui"
+  ],
+  "activationEvents": [
+    "onCommand:billing.open",
+    "onCommand:billing.upgrade"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "billing.open",
+        "title": "Open Billing",
+        "category": "Billing"
+      },
+      {
+        "command": "billing.upgrade",
+        "title": "Upgrade",
+        "category": "Billing"
+      }
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/microsoft/vscode.git"
+  }
+}
