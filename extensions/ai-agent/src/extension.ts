@@ -1,8 +1,18 @@
 import * as vscode from 'vscode';
 
+type Role = 'user' | 'assistant' | 'system';
+
+interface ChatMessage {
+	id: string;
+	role: Role;
+	text: string;
+	ts: number;
+}
+
 class AIChatViewProvider implements vscode.WebviewViewProvider {
 	public static readonly viewId = 'aiAgent.chat';
 	private _view?: vscode.WebviewView;
+	private readonly _storageKey = 'aiAgent.messages';
 
 	constructor(private readonly _context: vscode.ExtensionContext) {}
 
@@ -11,87 +21,169 @@ class AIChatViewProvider implements vscode.WebviewViewProvider {
 		const { webview } = webviewView;
 		webview.options = {
 			enableScripts: true,
-			localResourceRoots: [
-				vscode.Uri.joinPath(this._context.extensionUri, 'media')
-			]
+			localResourceRoots: [vscode.Uri.joinPath(this._context.extensionUri, 'media')]
 		};
-
 		webview.html = this._getHtmlForWebview(webview);
 
+		const load = () => this._context.globalState.get<ChatMessage[]>(this._storageKey) || [];
+		const save = (msgs: ChatMessage[]) => this._context.globalState.update(this._storageKey, msgs);
+
 		webview.onDidReceiveMessage(async (msg) => {
-			if (msg?.type === 'send' && typeof msg.text === 'string') {
-				const text: string = msg.text.trim();
-				if (!text) { return; }
-				// Stubbed response only
-				const response = `Echo: ${text}`;
-				webview.postMessage({ type: 'response', text: response });
+			if (!msg || typeof msg !== 'object') { return; }
+			switch (msg.type) {
+				case 'requestState': {
+					const state = load();
+					webview.postMessage({ type: 'state', messages: state });
+					break;
+				}
+				case 'send': {
+					const text = typeof msg.text === 'string' ? msg.text.trim() : '';
+					if (!text) { return; }
+					const history = load();
+					const userMsg: ChatMessage = { id: genId(), role: 'user', text, ts: Date.now() };
+					save([...history, userMsg]);
+					webview.postMessage({ type: 'append', message: userMsg });
+					const response = await this._getStubbedResponse(text);
+					const aiMsg: ChatMessage = { id: genId(), role: 'assistant', text: response, ts: Date.now() };
+					save([...load(), aiMsg]);
+					webview.postMessage({ type: 'append', message: aiMsg });
+					break;
+				}
+				case 'clear': {
+					save([]);
+					webview.postMessage({ type: 'cleared' });
+					break;
+				}
 			}
 		});
 	}
 
 	public post(text: string) {
-		this._view?.webview.postMessage({ type: 'response', text });
+		this._view?.webview.postMessage({ type: 'append', message: { id: genId(), role: 'assistant', text, ts: Date.now() } satisfies ChatMessage });
+	}
+
+	private async _getStubbedResponse(text: string): Promise<string> {
+		const trimmed = text.replace(/\s+/g, ' ').slice(0, 1000);
+		const echo = `Echo: ${trimmed}`;
+		await delay(100);
+		return echo;
 	}
 
 	private _getHtmlForWebview(webview: vscode.Webview): string {
 		const nonce = getNonce();
 		const stylesUri = webview.asWebviewUri(vscode.Uri.joinPath(this._context.extensionUri, 'media', 'styles.css'));
-		return /* html */ `<!DOCTYPE html>
+		const iconUri = webview.asWebviewUri(vscode.Uri.joinPath(this._context.extensionUri, 'media', 'icon.png'));
+		return `<!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${webview.cspSource} https: data:; style-src ${webview.cspSource} 'unsafe-inline'; script-src 'nonce-${nonce}';">
-	<link href="${stylesUri}" rel="stylesheet">
-	<title>AI Chat</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${webview.cspSource} https: data:; style-src ${webview.cspSource} 'unsafe-inline'; script-src 'nonce-${nonce}';">
+<link href="${stylesUri}" rel="stylesheet">
+<title>AI Chat</title>
 </head>
 <body>
-	<header class="ai-header">AI Chat</header>
+	<header class="ai-header">
+		<img class="ai-logo" src="${iconUri}" alt="" width="16" height="16"/>
+		<span class="ai-title">AI Chat</span>
+		<div class="ai-tools" role="toolbar" aria-label="Chat toolbar">
+			<button id="new" class="ai-tool" title="New chat" aria-label="New chat">New</button>
+			<button id="clear" class="ai-tool" title="Clear chat" aria-label="Clear chat">Clear</button>
+			<button id="copyLast" class="ai-tool" title="Copy last message" aria-label="Copy last message">Copy</button>
+		</div>
+	</header>
 	<main class="ai-main">
 		<div id="messages" class="ai-messages" aria-live="polite"></div>
 		<div class="ai-input">
 			<textarea id="input" rows="3" placeholder="Type a message…"></textarea>
-			<button id="send" class="ai-send">Send</button>
+			<div class="ai-input-actions">
+				<label class="ai-hint">Enter to send • Shift+Enter for newline</label>
+				<button id="send" class="ai-send">Send</button>
+			</div>
 		</div>
 	</main>
 	<script nonce="${nonce}">
 		const vscode = acquireVsCodeApi();
-		const messages = document.getElementById('messages');
-		const input = document.getElementById('input');
-		const send = document.getElementById('send');
+		const messagesEl = document.getElementById('messages');
+		const inputEl = document.getElementById('input');
+		const sendEl = document.getElementById('send');
+		const clearEl = document.getElementById('clear');
+		const newEl = document.getElementById('new');
+		const copyLastEl = document.getElementById('copyLast');
 
-		function addMessage(text, role) {
-			const el = document.createElement('div');
-			el.className = 'ai-msg ' + (role === 'user' ? 'user' : 'assistant');
-			el.textContent = text;
-			messages.appendChild(el);
-			messages.scrollTop = messages.scrollHeight;
+		function fmt(ts){ const d=new Date(ts); return d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); }
+		function addMessage(msg){
+			const wrap=document.createElement('div');
+			wrap.className='ai-msg ' + (msg.role==='user'?'user':'assistant');
+			wrap.dataset.id = msg.id;
+			const bubble=document.createElement('div');
+			bubble.className='ai-bubble';
+			bubble.textContent=msg.text;
+			const meta=document.createElement('div');
+			meta.className='ai-meta';
+			meta.textContent = (msg.role==='user'?'You':'AI') + ' • ' + fmt(msg.ts);
+			wrap.appendChild(bubble);
+			wrap.appendChild(meta);
+			messagesEl.appendChild(wrap);
+			messagesEl.scrollTop = messagesEl.scrollHeight;
 		}
+		function clearAll(){
+			messagesEl.innerHTML='';
+			vscode.setState({ messages: [] });
+		}
+		function getState(){ return vscode.getState() || { messages: [] }; }
+		function setState(messages){ vscode.setState({ messages }); }
 
-		send.addEventListener('click', () => {
-			const text = input.value.trim();
-			if (!text) { return; }
-			addMessage(text, 'user');
-			vscode.postMessage({ type: 'send', text });
-			input.value = '';
-			input.focus();
+		sendEl.addEventListener('click', () => {
+			const text = inputEl.value.trim();
+			if (!text) return;
+			vscode.postMessage({ type:'send', text });
+			inputEl.value='';
+			inputEl.focus();
 		});
-
-		input.addEventListener('keydown', (e) => {
-			if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-				send.click();
+		inputEl.addEventListener('keydown', (e) => {
+			if (e.key==='Enter' && !e.shiftKey) {
 				e.preventDefault();
+				sendEl.click();
+			}
+		});
+		clearEl.addEventListener('click', () => { vscode.postMessage({ type:'clear' }); });
+		newEl.addEventListener('click', () => { vscode.postMessage({ type:'clear' }); });
+		copyLastEl.addEventListener('click', async () => {
+			const els = messagesEl.querySelectorAll('.ai-bubble');
+			const last = els[els.length-1];
+			if (last && navigator.clipboard) {
+				try { await navigator.clipboard.writeText(last.textContent || ''); } catch {}
 			}
 		});
 
 		window.addEventListener('message', (event) => {
 			const msg = event.data;
-			if (msg?.type === 'response') {
-				addMessage(msg.text, 'assistant');
+			if (!msg) return;
+			if (msg.type==='state') {
+				clearAll();
+				for (const m of msg.messages) addMessage(m);
+				setState(msg.messages);
+			}
+			if (msg.type==='append') {
+				addMessage(msg.message);
+				const cur = getState().messages || [];
+				setState([...cur, msg.message]);
+			}
+			if (msg.type==='cleared') {
+				clearAll();
 			}
 		});
 
-		addMessage('Hi! This is a stubbed demo chat.','assistant');
+		(function init(){
+			const s = getState();
+			if (!s.messages || s.messages.length===0) {
+				const hello = { id: '${'hi'}' + Math.random().toString(36).slice(2), role: 'assistant', text: 'Hi. This is a demo chat.', ts: Date.now() };
+				addMessage(hello);
+				setState([hello]);
+			}
+			vscode.postMessage({ type:'requestState' });
+		})();
 	</script>
 </body>
 </html>`;
@@ -107,9 +199,13 @@ export function activate(context: vscode.ExtensionContext) {
 		}),
 		vscode.commands.registerCommand('aiAgent.sendMessage', async () => {
 			const value = await vscode.window.showInputBox({ prompt: 'Send a message to AI Chat' });
-			if (value) {
-				provider.post(`Echo: ${value}`);
-			}
+			if (value) { provider.post(`Echo: ${value}`); }
+		}),
+		vscode.commands.registerCommand('aiAgent.clear', async () => {
+			provider['post']('');
+			provider['post'] = provider['post'];
+			provider['post'];
+			provider;
 		})
 	);
 }
@@ -123,4 +219,12 @@ function getNonce() {
 		text += possible.charAt(Math.floor(Math.random() * possible.length));
 	}
 	return text;
+}
+
+function genId(): string {
+	return Math.random().toString(36).slice(2) + Date.now().toString(36);
+}
+
+function delay(ms: number): Promise<void> {
+	return new Promise(res => setTimeout(res, ms));
 }

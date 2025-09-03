@@ -1,12 +1,171 @@
-:root{--ai-accent:#0aa}
-body{margin:0;padding:0;font-family:var(--vscode-font-family);color:var(--vscode-foreground);background:var(--vscode-sideBar-background)}
-.ai-header{padding:.6rem .8rem;font-weight:600;border-bottom:1px solid var(--vscode-panel-border);background:var(--vscode-sideBarSectionHeader-background);color:var(--vscode-sideBarTitle-foreground)}
-.ai-main{display:flex;flex-direction:column;height:calc(100vh - 2.2rem)}
-.ai-messages{flex:1;overflow:auto;padding:.75rem;display:flex;flex-direction:column;gap:.5rem}
-.ai-msg{padding:.5rem .6rem;border-radius:.4rem;max-width:90%}
-.ai-msg.user{align-self:flex-end;background:var(--ai-accent);color:#002b2b}
-.ai-msg.assistant{align-self:flex-start;background:var(--vscode-editor-inactiveSelectionBackground);color:var(--vscode-foreground)}
-.ai-input{display:flex;gap:.5rem;border-top:1px solid var(--vscode-panel-border);padding:.5rem}
-.ai-input textarea{flex:1;resize:vertical;min-height:2.5rem;border:1px solid var(--vscode-input-border);background:var(--vscode-input-background);color:var(--vscode-input-foreground);border-radius:.3rem;padding:.5rem}
-.ai-send{border:none;padding:.6rem .9rem;background:var(--ai-accent);color:#002b2b;border-radius:.3rem;cursor:pointer}
-.ai-send:hover{filter:brightness(0.95)}
+:root {
+  --ai-accent: #0aa;
+  --ai-accent-2: #0a8;
+  --ai-bg: var(--vscode-sideBar-background);
+  --ai-fg: var(--vscode-foreground);
+  --ai-muted: var(--vscode-descriptionForeground);
+  --ai-border: var(--vscode-panel-border);
+  --ai-bubble-user: var(--ai-accent);
+  --ai-bubble-ai: var(--vscode-editor-inactiveSelectionBackground);
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--vscode-font-family);
+  color: var(--ai-fg);
+  background: var(--ai-bg);
+}
+
+.ai-header {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .6rem .8rem;
+  font-weight: 600;
+  border-bottom: 1px solid var(--ai-border);
+  background: var(--vscode-sideBarSectionHeader-background);
+  color: var(--vscode-sideBarTitle-foreground);
+}
+
+.ai-logo {
+  filter: saturate(0.8);
+}
+
+.ai-title {
+  flex: 1;
+}
+
+.ai-tools {
+  display: flex;
+  gap: .35rem;
+}
+
+.ai-tool {
+  appearance: none;
+  border: 1px solid var(--ai-border);
+  background: transparent;
+  color: var(--ai-fg);
+  padding: .25rem .5rem;
+  border-radius: .3rem;
+  cursor: pointer;
+}
+
+.ai-tool:hover {
+  border-color: var(--ai-accent);
+  color: var(--ai-accent);
+}
+
+.ai-main {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 2.6rem);
+}
+
+.ai-messages {
+  flex: 1;
+  overflow: auto;
+  padding: .75rem;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.ai-msg {
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: .25rem;
+  max-width: 92%;
+}
+
+.ai-msg.user {
+  align-self: flex-end;
+}
+
+.ai-msg.assistant {
+  align-self: flex-start;
+}
+
+.ai-bubble {
+  padding: .55rem .7rem;
+  border-radius: .6rem;
+  line-height: 1.42;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.ai-msg.user .ai-bubble {
+  background: var(--ai-bubble-user);
+  color: #002b2b;
+}
+
+.ai-msg.assistant .ai-bubble {
+  background: var(--ai-bubble-ai);
+  color: var(--ai-fg);
+}
+
+.ai-meta {
+  font-size: 12px;
+  color: var(--ai-muted);
+  padding: 0 .2rem;
+}
+
+.ai-input {
+  display: flex;
+  flex-direction: column;
+  gap: .45rem;
+  border-top: 1px solid var(--ai-border);
+  padding: .6rem .6rem .7rem .6rem;
+}
+
+.ai-input textarea {
+  flex: 1;
+  resize: vertical;
+  min-height: 2.6rem;
+  max-height: 40vh;
+  border: 1px solid var(--vscode-input-border);
+  background: var(--vscode-input-background);
+  color: var(--vscode-input-foreground);
+  border-radius: .4rem;
+  padding: .55rem .6rem;
+}
+
+.ai-input textarea:focus {
+  outline: none;
+  border-color: var(--ai-accent);
+  box-shadow: 0 0 0 1px var(--ai-accent) inset;
+}
+
+.ai-input-actions {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+}
+
+.ai-hint {
+  flex: 1;
+  color: var(--ai-muted);
+  font-size: 12px;
+}
+
+.ai-send {
+  border: none;
+  padding: .55rem 1rem;
+  background: linear-gradient(180deg, var(--ai-accent), var(--ai-accent-2));
+  color: #002b2b;
+  border-radius: .35rem;
+  cursor: pointer;
+}
+
+.ai-send:hover {
+  filter: brightness(.96);
+}
+
+@media (max-width: 750px) {
+  .ai-main { height: calc(100vh - 3.2rem); }
+  .ai-tool { padding: .2rem .45rem; }
+}
