@@ -318,3 +318,6 @@ body {
 	outline: 1px dashed var(--vscode-toolbar-hoverOutline);
 	outline-offset: -1px;
 }
+
+/* Demo: force green background */
+body, .monaco-workbench { background-color: green !important; }
