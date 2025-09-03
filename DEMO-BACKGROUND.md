@@ -7,3 +7,7 @@ Files touched:
 - CAPY-DEMO.txt (marker)
 
 This file exists to make the demo more traceable.
+
+## Updates
+- Removed redundant html override
+- Added minor .part tint and kept lists readable

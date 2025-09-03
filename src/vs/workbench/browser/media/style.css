@@ -322,5 +322,9 @@ body {
 /* Demo: force green background */
 body, .monaco-workbench { background-color: green !important; }
 
-html { background-color: green !important; }
 .monaco-workbench.border { background-color: green !important; }
+
+/* Demo: minor tweaks */
+.monaco-workbench .part { background-color: rgba(0,128,0,0.03) !important; }
+/* Keep lists readable */
+.monaco-workbench .monaco-list:focus { background-color: inherit; }
