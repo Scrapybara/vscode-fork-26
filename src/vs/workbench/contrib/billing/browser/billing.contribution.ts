@@ -4,7 +4,6 @@
 
 import { localize, localize2 } from '../../../../nls.js';
 import { Action2, MenuId, MenuRegistry, registerAction2 } from '../../../../platform/actions/common/actions.js';
-import { Categories } from '../../../../platform/action/common/actionCommonCategories.js';
 import { ServicesAccessor } from '../../../../platform/instantiation/common/instantiation.js';
 import { IWebviewWorkbenchService } from '../../webviewPanel/browser/webviewWorkbenchService.js';
 import { IBillingService } from '../../../services/billing/common/billingService.js';
@@ -16,7 +15,6 @@ class OpenBillingSurfaceAction extends Action2 {
 		super({
 			id: OpenBillingSurfaceAction.ID,
 			title: localize2('openBilling', 'Open Billing'),
-			category: Categories.Help,
 			f1: true
 		});
 	}
