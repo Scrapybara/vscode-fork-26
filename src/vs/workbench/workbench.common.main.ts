@@ -130,6 +130,7 @@ import './services/userActivity/browser/userActivityBrowser.js';
 import './services/editor/browser/editorPaneService.js';
 import './services/editor/common/customEditorLabelService.js';
 import './services/dataChannel/browser/dataChannelService.js';
+import './services/billing/common/billingService.js';
 
 import { InstantiationType, registerSingleton } from '../platform/instantiation/common/extensions.js';
 import { GlobalExtensionEnablementService } from '../platform/extensionManagement/common/extensionEnablementService.js';
@@ -257,6 +258,8 @@ import './contrib/markers/browser/markers.contribution.js';
 
 // Process Explorer
 import './contrib/processExplorer/browser/processExplorer.contribution.js';
+// Billing
+import './contrib/billing/browser/billing.contribution.js';
 
 // Merge Editor
 import './contrib/mergeEditor/browser/mergeEditor.contribution.js';
