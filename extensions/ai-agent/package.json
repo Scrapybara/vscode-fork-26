@@ -2,17 +2,19 @@
   "name": "ai-agent",
   "displayName": "AI Agent",
   "description": "Built-in demo: AI activity bar and chat sidebar.",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "publisher": "vscode",
   "license": "MIT",
   "engines": {
     "vscode": "^1.80.0"
   },
   "icon": "media/icon.png",
+  "keywords": ["ai", "chat", "sidebar", "demo"],
   "activationEvents": [
     "onView:aiAgent.chat",
     "onCommand:aiAgent.open",
-    "onCommand:aiAgent.sendMessage"
+    "onCommand:aiAgent.sendMessage",
+    "onCommand:aiAgent.clear"
   ],
   "main": "./out/extension",
   "capabilities": {
@@ -47,6 +49,27 @@
         "command": "aiAgent.sendMessage",
         "title": "AI: Send Message",
         "category": "AI"
+      },
+      {
+        "command": "aiAgent.clear",
+        "title": "AI: Clear Chat",
+        "category": "AI"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "aiAgent.clear",
+          "when": "view == aiAgent.chat",
+          "group": "navigation@99"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "aiAgent.chat",
+        "contents": "Welcome to AI Chat. Type a message below to start.",
+        "when": "true"
       }
     ]
   },
