@@ -165,6 +165,25 @@ body {
   filter: brightness(.96);
 }
 
+.ai-select {
+  border: 1px solid var(--ai-border);
+  background: var(--vscode-dropdown-background);
+  color: var(--vscode-dropdown-foreground);
+  padding: .25rem .5rem;
+  border-radius: .3rem;
+  cursor: pointer;
+}
+
+.ai-select:hover {
+  border-color: var(--ai-accent);
+}
+
+.ai-select:focus {
+  outline: none;
+  border-color: var(--ai-accent);
+  box-shadow: 0 0 0 1px var(--ai-accent) inset;
+}
+
 @media (max-width: 750px) {
   .ai-main { height: calc(100vh - 3.2rem); }
   .ai-tool { padding: .2rem .45rem; }

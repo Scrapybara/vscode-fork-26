@@ -14,7 +14,8 @@
     "onView:aiAgent.chat",
     "onCommand:aiAgent.open",
     "onCommand:aiAgent.sendMessage",
-    "onCommand:aiAgent.clear"
+    "onCommand:aiAgent.clear",
+    "onCommand:aiAgent.selectModel"
   ],
   "main": "./out/extension",
   "capabilities": {
@@ -54,10 +55,20 @@
         "command": "aiAgent.clear",
         "title": "AI: Clear Chat",
         "category": "AI"
+      },
+      {
+        "command": "aiAgent.selectModel",
+        "title": "AI: Select Model",
+        "category": "AI"
       }
     ],
     "menus": {
       "view/title": [
+        {
+          "command": "aiAgent.selectModel",
+          "when": "view == aiAgent.chat",
+          "group": "navigation@98"
+        },
         {
           "command": "aiAgent.clear",
           "when": "view == aiAgent.chat",
@@ -71,7 +82,24 @@
         "contents": "Welcome to AI Chat. Type a message below to start.",
         "when": "true"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "AI Agent",
+      "properties": {
+        "aiAgent.grok.model": {
+          "type": "string",
+          "default": "grok-2",
+          "enum": ["grok-2", "grok-2-mini", "grok-1.5", "grok-1"],
+          "enumDescriptions": [
+            "Strong general model (stubbed)",
+            "Fast and lightweight (stubbed)",
+            "Balanced capability (stubbed)",
+            "Legacy model (stubbed)"
+          ],
+          "description": "Grok model to use in the demo chat. Responses are stubbed."
+        }
+      }
+    }
   },
   "scripts": {
     "compile": "npx gulp compile-extension:ai-agent",
