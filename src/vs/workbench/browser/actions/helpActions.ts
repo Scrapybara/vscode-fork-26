@@ -351,6 +351,30 @@ class AskVSCodeCopilot extends Action2 {
 	}
 }
 
+class OpenBillingAction extends Action2 {
+	static readonly ID = 'workbench.action.openBilling';
+	constructor() {
+		super({
+			id: OpenBillingAction.ID,
+			title: {
+				...localize2('openBilling', "Billing…"),
+				mnemonicTitle: localize({ key: 'miBilling', comment: ['&& denotes a mnemonic'] }, "&&Billing…"),
+			},
+			category: Categories.Help,
+			f1: true,
+			menu: {
+				id: MenuId.MenubarHelpMenu,
+				group: '3_support',
+				order: 1
+			}
+		});
+	}
+	run(accessor: ServicesAccessor): void {
+		const commandService = accessor.get(ICommandService);
+		commandService.executeCommand('billing.open');
+	}
+}
+
 MenuRegistry.appendMenuItem(MenuId.MenubarHelpMenu, {
 	command: {
 		id: AskVSCodeCopilot.ID,
@@ -402,3 +426,4 @@ if (OpenPrivacyStatementUrlAction.AVAILABLE) {
 registerAction2(GetStartedWithAccessibilityFeatures);
 
 registerAction2(AskVSCodeCopilot);
+registerAction2(OpenBillingAction);
