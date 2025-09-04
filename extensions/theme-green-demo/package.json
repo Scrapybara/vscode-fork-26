@@ -1,0 +1,23 @@
+{
+  "name": "theme-green-demo",
+  "displayName": "Green Demo",
+  "description": "A simple green demo theme for screenshot purposes.",
+  "version": "0.0.1",
+  "publisher": "vscode",
+  "license": "MIT",
+  "engines": {
+    "vscode": "*"
+  },
+  "categories": ["Themes"],
+  "contributes": {
+    "themes": [
+      {
+        "id": "green-demo",
+        "label": "Green Demo",
+        "uiTheme": "vs-dark",
+        "path": "./themes/green-color-theme.json"
+      }
+    ]
+  },
+  "activationEvents": []
+}
